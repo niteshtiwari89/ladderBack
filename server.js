@@ -4,10 +4,9 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const authenticateToken = require("./middlewares/authMiddleware.js");
-const productRoutes = require("./routes/productRoutes.js");
 const contactRoutes = require("./routes/contactRoutes.js");
+const careerRoutes = require('./routes/careerRoutes.js');
 const blogRoutes = require("./routes/blogRoutes.js");
-const caseRoutes = require("./routes/caseRoutes.js");
 const authRoutes = require("./routes/authRoutes.js"); // Correctly import authRoutes
 
 dotenv.config(); // Load environment variables from .env file
@@ -33,10 +32,9 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
-app.use("/api/products", productRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use('/api/careers', careerRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use("/api/cases",  caseRoutes);
 app.use("/api/auth", authRoutes); // Use the correct route path
 
 app.listen(PORT, () => {
