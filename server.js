@@ -6,8 +6,9 @@ const bodyParser = require("body-parser");
 const authenticateToken = require("./middlewares/authMiddleware.js");
 const contactRoutes = require("./routes/contactRoutes.js");
 const careerRoutes = require('./routes/careerRoutes.js');
+const applicationRoutes = require('./routes/applicationRoutes.js');
 const blogRoutes = require("./routes/blogRoutes.js");
-const authRoutes = require("./routes/authRoutes.js"); // Correctly import authRoutes
+const authRoutes = require("./routes/authRoutes.js"); 
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -34,8 +35,9 @@ mongoose
 // Routes
 app.use("/api/contacts", contactRoutes);
 app.use('/api/careers', careerRoutes);
+app.use('/api/applications', applicationRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use("/api/auth", authRoutes); // Use the correct route path
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
