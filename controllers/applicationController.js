@@ -1,9 +1,24 @@
 const Application = require('../models/Application');
+const cloudinary = require('../utils/cloudinary');
 
 exports.createApplication = async (req, res) => {
   try {
     const { fullName, email, phone, position, yearsOfExperience, coverLetter } = req.body;
-    const resumeUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    let resumeUrl = null;
+
+    if (req.file) {
+      // Upload resume to Cloudinary (as raw file)
+      const result = await cloudinary.uploader.upload_stream(
+        { folder: 'resumes', resource_type: 'raw' },
+        (error, result) => {
+          if (error) throw error;
+          resumeUrl = result.secure_url;
+        }
+      );
+      await new Promise((resolve, reject) => {
+        req.file.stream.pipe(result).on('finish', resolve).on('error', reject);
+      });
+    }
 
     if (!resumeUrl) {
       return res.status(400).json({ message: 'Resume file is required.' });

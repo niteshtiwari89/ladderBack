@@ -8,6 +8,7 @@ const contactRoutes = require("./routes/contactRoutes.js");
 const careerRoutes = require('./routes/careerRoutes.js');
 const applicationRoutes = require('./routes/applicationRoutes.js');
 const blogRoutes = require("./routes/blogRoutes.js");
+const projectRoutes = require('./routes/projectRoutes');
 const authRoutes = require("./routes/authRoutes.js"); 
 
 dotenv.config(); // Load environment variables from .env file
@@ -37,6 +38,7 @@ app.use("/api/contacts", contactRoutes);
 app.use('/api/careers', careerRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use('/api/projects', projectRoutes);
 app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
