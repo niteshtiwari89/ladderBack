@@ -5,7 +5,7 @@ const projectController = require('../controllers/projectController');
 const authenticateToken = require('../middlewares/authMiddleware');
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 router.post('/', upload.single('image'), projectController.createProject);
 router.put('/:id', upload.single('image'), projectController.updateProject);
