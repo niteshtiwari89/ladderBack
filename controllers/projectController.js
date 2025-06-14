@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const Project = require('../models/Project'); // adjust path as needed
-
+const streamifier = require('streamifier');
 // Configure Cloudinary (if not already configured globally)
 cloudinary.config({
   cloud_name: 'dqz8qskua',
