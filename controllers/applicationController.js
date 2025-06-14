@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const Application = require('../models/Application'); // adjust path as needed
-
+const { Readable } = require('stream');
 // Configure Cloudinary (if not already configured globally)
 cloudinary.config({
   cloud_name: 'dqz8qskua',
@@ -10,22 +10,42 @@ cloudinary.config({
 
 exports.createApplication = async (req, res) => {
   try {
-    const { fullName, email, phone, position, yearsOfExperience, coverLetter } = req.body;
+    const { fullName, email, phone, position, yearsOfExperience, coverLetter , resume } = req.body;
     let resumeUrl = null;
 
-    if (req.file) {
-      // Upload resume to Cloudinary (as raw file)
-      const result = await cloudinary.uploader.upload_stream(
-        { folder: 'resumes', resource_type: 'raw' },
+    
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Resume is required' });
+    }
+     const bufferToStream = (buffer) => {
+      const readable = new Readable();
+      readable.push(buffer);
+      readable.push(null);
+      return readable;
+    };
+    const uploadPromise = new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { 
+          folder: 'resumes', 
+          resource_type: 'raw', 
+          public_id: `${Date.now()}-${req.file.originalname}`  // Optional: You can add a unique public_id
+        },
         (error, result) => {
-          if (error) throw error;
-          resumeUrl = result.secure_url;
+          if (error) {
+            reject(error); // Reject if there's an error
+          } else {
+            resumeUrl = result.secure_url; // Capture the secure URL of the uploaded file
+            resolve(); // Resolve the Promise when upload is successful
+          }
         }
       );
-      await new Promise((resolve, reject) => {
-        req.file.stream.pipe(result).on('finish', resolve).on('error', reject);
-      });
-    }
+
+      // Pipe the file stream to Cloudinary
+        bufferToStream(req.file.buffer).pipe(stream);
+    });
+
+    await uploadPromise; // Wait for the upload to complete
 
     if (!resumeUrl) {
       return res.status(400).json({ message: 'Resume file is required.' });
