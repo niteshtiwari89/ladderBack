@@ -69,7 +69,7 @@ exports.updateProject = async (req, res) => {
         );
         streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
-      update.imageUrl = result.secure_url;
+      update.image = result.secure_url;
     }
     const project = await Project.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!project) return res.status(404).json({ message: 'Not found' });
